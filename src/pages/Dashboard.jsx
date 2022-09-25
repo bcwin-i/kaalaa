@@ -22,6 +22,8 @@ import { MdVerified } from "react-icons/md";
 const Dashboard = () => {
   const [images, setImages] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [views, setViews] = useState([]);
+  const [counter, setCounter] = useState(false);
 
   useEffect(() => {
     for (let i = 0; i < 10; i++) {
@@ -61,11 +63,11 @@ const Dashboard = () => {
           }, 1000);
   }, [images]);
 
-  const updateState = (timer) => {
-    // console.log("Timer: ", images);
+  const updateState = () => {
+    console.log("Update called: ");
     const newState = images.map((obj) => {
       if (obj.index === selectedImage.index) {
-        return { ...obj, timer: obj.timer - 1 };
+        return { ...obj, timer: obj.timer > 0 ? obj.timer - 1 : 0 };
       }
       return obj;
     });
@@ -73,10 +75,14 @@ const Dashboard = () => {
     setImages(newState);
   };
 
+  const viewUpdate = (item, status) => {
+    const data = status
+      ? setViews((e) => [...e, item])
+      : setViews((e) => e.filter((val) => val.index !== item.index));
+  };
+
   return (
     <DashboardContainer>
-      {/* <Logo src={require("../assets/logo2.png")} alt="kāālāā icon"/> */}
-      {/* <LogoName>kāālāā</LogoName> */}
       <WorkView>
         <FlexColumn
           style={{
@@ -93,6 +99,7 @@ const Dashboard = () => {
               setImages={setImages}
               images={images}
               selectedImage={selectedImage}
+              viewUpdate={viewUpdate}
             />
           ))}
         </FlexColumn>
