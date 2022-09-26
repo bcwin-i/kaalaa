@@ -6,20 +6,15 @@ import { MdVerified } from "react-icons/md";
 import { useRef } from "react";
 import { useIsInViewport } from "../hooks/useIsInViewport";
 
-const ImageContainer = ({
-  data,
-  setSelectedImage,
-  viewUpdate,
-  setImages,
-  images,
-}) => {
-  const [details, setDetails] = useState(false);
+const ImageContainer = ({ data, setSelectedImage, setImages, images }) => {
+  const [details, setDetails] = useState(true);
   const ref = useRef(null);
   const isInViewport = useIsInViewport(ref);
 
   useEffect(() => {
     // viewUpdate(data, images[data?.index]?.timer < 1 ? false : isInViewport);
     if (isInViewport) {
+      // setDetails(true);
       setTimeout(
         () =>
           setImages((e) =>
@@ -32,6 +27,8 @@ const ImageContainer = ({
           ),
         1000
       );
+    } else {
+      // setDetails(false);
     }
   }, [isInViewport]);
 
@@ -60,8 +57,8 @@ const ImageContainer = ({
       <ImageListContainer
         src={data.url}
         key={data.index}
-        onMouseEnter={() => setDetails(true)}
-        onMouseLeave={() => setDetails(false)}
+        // onMouseEnter={() => setDetails(true)}
+        // onMouseLeave={() => setDetails(false)}
       />
       <div
         style={{
@@ -78,7 +75,9 @@ const ImageContainer = ({
           cursor: "pointer",
         }}
         onMouseEnter={() => setDetails(true)}
-        onMouseLeave={() => setDetails(false)}
+        onMouseLeave={() =>
+          isInViewport ? setDetails(true) : setDetails(false)
+        }
       >
         <span style={{ fontWeight: "bold" }}>Item {data.index}</span>
         <br />

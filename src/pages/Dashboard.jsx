@@ -84,11 +84,7 @@ const Dashboard = () => {
   return (
     <DashboardContainer>
       <WorkView>
-        <FlexColumn
-          style={{
-            overflow: "scroll",
-          }}
-        >
+        <FlexColumn>
           {/* <LogoDesc>Items to View</LogoDesc> */}
           {images.map((data, index) => (
             <ImageContainer

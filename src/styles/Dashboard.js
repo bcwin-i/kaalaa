@@ -9,6 +9,13 @@ export const DashboardContainer = styled.div`
   flex-direction: column;
   overflow: scroll;
   padding: 10px 10px 0 10px;
+  -ms-overflow-style: none; /* for Internet Explorer, Edge */
+  scrollbar-width: none; /* for Firefox */
+  overflow-y: scroll;
+
+  ::-webkit-scrollbar {
+    display: none; /* for Chrome, Safari, and Opera */
+  }
 
   @media (max-width: 768px) {
     padding: 10px 0 0 0;
@@ -57,9 +64,14 @@ export const WorkSpace = styled.div`
   overflow: scroll;
   align-items: center;
   background-color: "rgba(0,0,0,0.5)";
-  -ms-overflow-style: none; /* Internet Explorer 10+ */
-  scrollbar-width: none;
   padding: 0 15px;
+  -ms-overflow-style: none; /* for Internet Explorer, Edge */
+  scrollbar-width: none; /* for Firefox */
+  overflow-y: scroll;
+
+  ::-webkit-scrollbar {
+    display: none; /* for Chrome, Safari, and Opera */
+  }
 
   @media (max-width: 768px) {
     padding: 0;
@@ -70,8 +82,13 @@ export const WorkView = styled.div`
   display: flex;
   flex: 1;
   overflow: scroll;
-  -ms-overflow-style: none; /* Internet Explorer 10+ */
-  scrollbar-width: none;
+  -ms-overflow-style: none; /* for Internet Explorer, Edge */
+  scrollbar-width: none; /* for Firefox */
+  overflow-y: scroll;
+
+  ::-webkit-scrollbar {
+    display: none; /* for Chrome, Safari, and Opera */
+  }
 
   @media (max-width: 768px) {
     flex-direction: column;

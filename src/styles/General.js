@@ -30,6 +30,14 @@ export const FlexRow = styled.div`
 export const FlexColumn = styled.div`
   display: flex;
   flex-direction: column;
+  overflow: scroll;
+  -ms-overflow-style: none; /* for Internet Explorer, Edge */
+  scrollbar-width: none; /* for Firefox */
+  overflow-y: scroll;
+
+  ::-webkit-scrollbar {
+    display: none; /* for Chrome, Safari, and Opera */
+  }
 
   @media (max-width: 768px) {
     flex-direction: row;
