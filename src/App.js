@@ -14,7 +14,9 @@ function App() {
       setImages((e) => [
         ...e,
         {
-          url: "https://random.imagecdn.app/100/100?index"+i, // url: "https://source.unsplash.com/random/?sig=" + i,
+          url: `https://random.imagecdn.app/${
+            i % 2 === 0 ? 120 : 100
+          }/100?${i}`, // url: "https://source.unsplash.com/random/?sig=" + i,
           index: i,
           timer: 10,
         },
@@ -28,7 +30,7 @@ function App() {
     // </Routes>
     images.map((data, index) => (
       <>
-        <img src={data?.url} key={index}/>
+        <img src={data?.url} key={index} />
         <br />
       </>
     ))
