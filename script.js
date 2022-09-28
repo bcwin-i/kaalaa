@@ -29,11 +29,9 @@ setInterval(async () => {
 function addImage(img) {
   const exist = existArray(img, images);
   // console.log("New image: ", images.some(e => e.data.src === img.src))
-  if (!images.some(e => e.data.src === img.src) && img.src) {
+  if (!images.some((e) => e.data.src === img.src) && img.src) {
     const size = `${img?.width}x${img?.height}`;
-    // if (size === "100x100")
-    console.log("Adding: ", exist)
-    images.push({ data: img, timer: 10 });
+    if (size === "100x100") images.push({ data: img, timer: 10 });
   }
 }
 
@@ -43,13 +41,13 @@ async function getAllImages() {
   });
 }
 
-getAllImages()
+getAllImages();
 
 document.onreadystatechange = () => {
-  if (document.readyState === 'complete') {
-    getAllImages()
+  if (document.readyState === "complete") {
+    getAllImages();
   }
-}
+};
 
 window.onscroll = async function (e) {
   getAllImages();
