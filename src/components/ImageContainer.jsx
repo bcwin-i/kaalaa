@@ -5,11 +5,14 @@ import { ImageListContainer } from "../styles/Dashboard";
 import { MdVerified } from "react-icons/md";
 import { useRef } from "react";
 import { useIsInViewport } from "../hooks/useIsInViewport";
+import {add} from "../services/viewLogic/imageSlice"
+import { useDispatch } from "react-redux";
 
 const ImageContainer = ({ data, setSelectedImage, setImages, images }) => {
   const [details, setDetails] = useState(true);
   const ref = useRef(null);
   const isInViewport = useIsInViewport(ref);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     // viewUpdate(data, images[data?.index]?.timer < 1 ? false : isInViewport);
@@ -57,9 +60,9 @@ const ImageContainer = ({ data, setSelectedImage, setImages, images }) => {
       <ImageListContainer
         src={data.url}
         key={data.index}
-        // onMouseEnter={() => setDetails(true)}
-        // onMouseLeave={() => setDetails(false)}
+        onLoad={() => dispatch(add(data))}
       />
+      {/* <img src={data.url} /> */}
       <div
         style={{
           position: "absolute",

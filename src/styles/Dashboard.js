@@ -108,3 +108,16 @@ export const Details = styled.div`
   transition: 0.5s all ease-in-out;
   z-index: 5;
 `;
+
+export const ImageSetupContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  background: ${colors.light};
+  border-radius: 15px;
+  margin-bottom: 10px;
+  font-weight: 600;
+  font-size: 12px;
+`;

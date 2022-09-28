@@ -12,7 +12,7 @@ export const useIsInViewport = (ref) => {
   );
 
   useEffect(() => {
-    observer.observe(ref.current);
+    observer?.observe(ref?.current);
 
     return () => {
       observer.disconnect();
