@@ -31,7 +31,7 @@ function addImage(img) {
   // console.log("New image: ", images.some(e => e.data.src === img.src))
   if (!images.some((e) => e.data.src === img.src) && img.src) {
     const size = `${img?.width}x${img?.height}`;
-    console.log("Size: ", size)
+    // console.log("Size: ", size)
     if (size === "100x100") images.push({ data: img, timer: 10 });
   }
 }
