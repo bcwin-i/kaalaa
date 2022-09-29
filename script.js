@@ -70,7 +70,7 @@ setInterval(async () => {
   });
 
   console.log("Images: ", images);
-}, 2000);
+}, 1000);
 
 function handleClass(element, className, condition, timer) {
   const valid = element.classList.contains(className);
