@@ -5,6 +5,7 @@ import Share from "./pages/Share";
 import Dashboard from "./pages/Dashboard";
 import Bread from "./pages/Bread";
 import ImageContainer from "./components/ImageContainer";
+import { Overlay, Row, Wrapper } from "./style";
 
 function App() {
   const [images, setImages] = useState([]);
@@ -28,12 +29,29 @@ function App() {
     // <Routes>
     //   <Route index element={<Dashboard />} />
     // </Routes>
-    images.map((data, index) => (
-      <>
-        <img src={data?.url} key={index} />
-        <br />
-      </>
-    ))
+    <>
+      {/* <Wrapper key={-1}>
+        <img src="https://random.imagecdn.app/120/100" />
+        <Overlay>
+        <Row>
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/833/833655.png"
+            alt="timer"
+            height={17}
+            width={17}
+            
+          />
+          8 seconds
+        </Row>
+        </Overlay>
+      </Wrapper> */}
+      {images.map((data, index) => (
+        <>
+          <img src={data?.url} key={index} alt={index} />
+          <br />
+        </>
+      ))}
+    </>
   );
 }
 

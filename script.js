@@ -10,10 +10,45 @@ function existArray(data, array) {
   return index;
 }
 
+function createWrapper(img) {
+  let htmlObject = document.createElement("div");
+  htmlObject.className = "wrapper";
+
+  const Icon = new Image();
+  Icon.className = "imgIcon";
+  Icon.src = "https://cdn-icons-png.flaticon.com/512/833/833655.png";
+
+  let Row = document.createElement("p");
+  Row.className = "row";
+  Row.appendChild(Icon);
+
+  let Timer = document.createElement("span");
+  Timer.id = img.data.src + "?" + img.index;
+  Timer.innerHTML = img.timer - 1 + " secs";
+  Row.appendChild(Timer);
+
+  let Overlay = document.createElement("div");
+  Overlay.className = "overlay";
+  Overlay.appendChild(Row);
+
+  let image = new Image(img.data.width, img.data.height);
+  image.src = img.data.src;
+  image.alt = img.data.alt;
+
+  htmlObject.appendChild(Overlay);
+  htmlObject.appendChild(image);
+
+  img.data.replaceWith(htmlObject);
+}
+
 setInterval(async () => {
   await images.forEach((img) => {
-    const view = elementInViewport(img.data);
+    const element = document.getElementById(img.data.src + "?" + img.index);
+    const view = element
+      ? elementInViewport(element)
+      : elementInViewport(img.data);
     const existImages = existArray(img, images);
+    console.log(img.index, view);
     if (view && existImages !== -1) {
       let currImg = [...images];
       currImg[existImages] = {
@@ -21,18 +56,44 @@ setInterval(async () => {
         timer: img.timer === 0 ? 0 : img.timer - 1,
       };
       images = currImg;
-      console.log("Current: ", images);
+
+      const timer = document.getElementById(img.data.src + "?" + img.index);
+      if (timer) {
+        timer.innerHTML =
+          images[existImages].timer === 0
+            ? "Watched"
+            : images[existImages].timer + " secs";
+      } else {
+        createWrapper(img);
+      }
     }
   });
+
+  console.log("Images: ", images);
 }, 2000);
+
+function handleClass(element, className, condition, timer) {
+  const valid = element.classList.contains(className);
+  if (condition) {
+    if (!valid) {
+      element.classList.add(className);
+      element.setAttribute("timer", timer);
+    }
+  } else {
+    if (valid) element.classList.remove(className);
+  }
+}
 
 function addImage(img) {
   const exist = existArray(img, images);
   // console.log("New image: ", images.some(e => e.data.src === img.src))
   if (!images.some((e) => e.data.src === img.src) && img.src) {
-    const size = `${img?.width}x${img?.height}`;
+    const size = `${img.width}x${img.height}`;
     // console.log("Size: ", size)
-    if (size === "100x100") images.push({ data: img, timer: 10 });
+    if (size === "100x100") {
+      const index = images.length + 1;
+      images.push({ data: img, index, timer: 10 });
+    }
   }
 }
 
