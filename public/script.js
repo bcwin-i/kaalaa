@@ -1,6 +1,28 @@
 console.log("KĀĀlĀĀ script initiated");
+import axios from "https://cdn.skypack.dev/axios";
 
 let images = [];
+let user = {};
+
+const getMeta = async () => {
+  const res = await axios.get("https://geolocation-db.com/json/");
+  const meta = navigator.userAgent;
+  const userMata = {
+    ipaddress: res.data?.IPv4,
+    useragent: meta,
+  };
+  // console.log("UserMeta: ", userMata);
+  user = {
+    IP: res.data?.IPv4,
+    meta: meta,
+  };
+  // return userMata;
+};
+
+async function addTracking(obj) {
+  const res = await axios.post("http://localhost:5050/user/track", obj);
+  console.log("Response: ", res);
+}
 
 function existArray(data, array) {
   const index = array.findIndex((object) => {
@@ -57,6 +79,12 @@ setInterval(async () => {
       };
       images = currImg;
 
+      // if (currImg[existImages].timer - 1 === 0)
+      //   addTracking({
+      //     ...user,
+      //     id: img.data.src + "?" + img.index,
+      //   });
+
       const timer = document.getElementById(img.data.src + "?" + img.index);
       if (timer) {
         timer.innerHTML =
@@ -105,9 +133,29 @@ async function getAllImages() {
 
 getAllImages();
 
-document.onreadystatechange = () => {
+document.onreadystatechange = async () => {
   if (document.readyState === "complete") {
     getAllImages();
+    // getMeta();
+
+    const cookie = getCookie("Kaalaa");
+    if (!cookie)
+      await axios({
+        url: `http://localhost:5050`,
+        method: "GET",
+        headers: {
+          // "content-type": "application/json",
+          "Access-Control-Allow-Credentials": true,
+          "Access-Control-Allow-Origin": "http://localhost:5050/",
+        },
+        // data: {
+        //   emailaddress: email,
+        //    authv: "V2"
+        // },
+        withCredentials: true,
+      });
+
+    console.log("Exist: ");
   }
 };
 
@@ -133,4 +181,24 @@ function elementInViewport(el) {
     top + height <= window.pageYOffset + window.innerHeight &&
     left + width <= window.pageXOffset + window.innerWidth
   );
+}
+
+function getCookie(name) {
+  // Split cookie string and get all individual name=value pairs in an array
+  var cookieArr = document.cookie.split(";");
+
+  // Loop through the array elements
+  for (var i = 0; i < cookieArr.length; i++) {
+    var cookiePair = cookieArr[i].split("=");
+
+    /* Removing whitespace at the beginning of the cookie name
+      and compare it with the given string */
+    if (name == cookiePair[0].trim()) {
+      // Decode the cookie value and return
+      return decodeURIComponent(cookiePair[1]);
+    }
+  }
+
+  // Return null if not found
+  return null;
 }
