@@ -11,13 +11,12 @@ function App() {
   const [images, setImages] = useState([]);
 
   useEffect(() => {
+    // url: "https://source.unsplash.com/random/?sig=" + i,
     for (let i = 0; i < 10; i++) {
       setImages((e) => [
         ...e,
         {
-          url: `https://random.imagecdn.app/${
-            i % 2 === 0 ? 120 : 100
-          }/100?${i}`, // url: "https://source.unsplash.com/random/?sig=" + i,
+          url: "https://source.unsplash.com/random/10×10?" + i,
           index: i,
           timer: 10,
         },
@@ -47,7 +46,15 @@ function App() {
       </Wrapper> */}
       {images.map((data, index) => (
         <>
-          <img src={data?.url} key={index} alt={index} />
+          <img
+            src={data?.url}
+            key={index}
+            alt={index}
+            id={index}
+            style={{borderRadius: 20}}
+            width={(index % 2) === 0 ? 100 : 300}
+            height={(index % 2) === 0 ? 100 : "auto"}
+          />
           <br />
         </>
       ))}

@@ -8,20 +8,25 @@ const getMeta = async () => {
   const res = await axios.get("https://geolocation-db.com/json/");
   const meta = navigator.userAgent;
   const userMata = {
-    ipaddress: res.data?.IPv4,
-    useragent: meta,
-  };
-  // console.log("UserMeta: ", userMata);
-  user = {
     IP: res.data?.IPv4,
-    meta: meta,
+    meta: meta.replaceAll(" ", ""),
   };
-  // return userMata;
+
+  user = userMata;
+  return user;
 };
 
 async function addTracking(obj) {
-  const res = await axios.post("http://localhost:5050/user/track", obj);
-  console.log("Response: ", res);
+  const resquest = axios({
+    url: `http://localhost:5050/user/track`,
+    method: "POST",
+    withCredentials: true,
+    headers: {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Credentials": true,
+    },
+    data: obj,
+  });
 }
 
 function existArray(data, array) {
@@ -70,7 +75,7 @@ setInterval(async () => {
       ? elementInViewport(element)
       : elementInViewport(img.data);
     const existImages = existArray(img, images);
-    console.log(img.index, view);
+    // console.log(img.index, view);
     if (view && existImages !== -1) {
       let currImg = [...images];
       currImg[existImages] = {
@@ -79,11 +84,10 @@ setInterval(async () => {
       };
       images = currImg;
 
-      // if (currImg[existImages].timer - 1 === 0)
-      //   addTracking({
-      //     ...user,
-      //     id: img.data.src + "?" + img.index,
-      //   });
+      if (currImg[existImages].timer - 1 === 0)
+        addTracking({
+          itemID: img.data.src + "?" + img.index,
+        });
 
       const timer = document.getElementById(img.data.src + "?" + img.index);
       if (timer) {
@@ -97,7 +101,7 @@ setInterval(async () => {
     }
   });
 
-  console.log("Images: ", images);
+  // console.log("Images: ", images);
 }, 1000);
 
 function handleClass(element, className, condition, timer) {
@@ -139,23 +143,29 @@ document.onreadystatechange = async () => {
     // getMeta();
 
     const cookie = getCookie("Kaalaa");
-    if (!cookie)
-      await axios({
-        url: `http://localhost:5050`,
-        method: "GET",
-        headers: {
-          // "content-type": "application/json",
-          "Access-Control-Allow-Credentials": true,
-          "Access-Control-Allow-Origin": "http://localhost:5050/",
-        },
-        // data: {
-        //   emailaddress: email,
-        //    authv: "V2"
-        // },
-        withCredentials: true,
-      });
+    if (!cookie) {
+      if (localStorage.getItem("Kalaa"))
+        setCookie("Kaalaa", localStorage.getItem("Kalaa"), 1);
+      else
+        await getMeta()
+          .then(async (data) => {
+            const res = await axios({
+              url: `http://localhost:5050`,
+              method: "POST",
+              withCredentials: true,
+              headers: {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Credentials": true,
+              },
+              data,
+            });
 
-    console.log("Exist: ");
+            if (res.data?.status) {
+              localStorage.setItem("Kalaa", getCookie("Kaalaa"));
+            }
+          })
+          .catch((e) => console.error(e));
+    }
   }
 };
 
@@ -201,4 +211,17 @@ function getCookie(name) {
 
   // Return null if not found
   return null;
+}
+
+function setCookie(name, value, daysToLive) {
+  // Encode value in order to escape semicolons, commas, and whitespace
+  var cookie = name + "=" + encodeURIComponent(value);
+
+  if (typeof daysToLive === "number") {
+    /* Sets the max-age attribute so that the cookie expires
+      after the specified number of days */
+    cookie += "; max-age=" + daysToLive * 24 * 60 * 60;
+
+    document.cookie = cookie;
+  }
 }
