@@ -8,17 +8,18 @@ const getMeta = async () => {
   const res = await axios.get("https://geolocation-db.com/json/");
   const meta = navigator.userAgent;
   const userMata = {
-    IP: res.data?.IPv4,
-    meta: meta.replaceAll(" ", ""),
+    ip: res.data?.IPv4,
+    metaData: meta.replaceAll(" ", ""),
   };
 
   user = userMata;
+  console.log(user);
   return user;
 };
 
 async function addTracking(obj) {
   const resquest = axios({
-    url: `http://localhost:5050/user/track`,
+    url: `http://localhost:5050/track/add`,
     method: "POST",
     withCredentials: true,
     headers: {
@@ -87,6 +88,7 @@ setInterval(async () => {
       if (currImg[existImages].timer - 1 === 0)
         addTracking({
           itemID: img.data.src + "?" + img.index,
+          userID: getCookie("Kaalaa"),
         });
 
       const timer = document.getElementById(img.data.src + "?" + img.index);
@@ -140,7 +142,7 @@ getAllImages();
 document.onreadystatechange = async () => {
   if (document.readyState === "complete") {
     getAllImages();
-    // getMeta();
+    getMeta();
 
     const cookie = getCookie("Kaalaa");
     if (!cookie) {
@@ -150,7 +152,7 @@ document.onreadystatechange = async () => {
         await getMeta()
           .then(async (data) => {
             const res = await axios({
-              url: `http://localhost:5050`,
+              url: `http://localhost:5050/user`,
               method: "POST",
               withCredentials: true,
               headers: {
