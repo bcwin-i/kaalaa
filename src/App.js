@@ -44,6 +44,16 @@ function App() {
         </Row>
         </Overlay>
       </Wrapper> */}
+      <div className="qr" style={{ padding: 20 }}></div>
+      {/* <div style={{ padding: 20 }}>
+        <a
+          className="download"
+          href="https://drive.google.com/file/d/19n93mxv6WOFo6DCMu-_zwuz4lC1vUvso/view?usp=sharing"
+          target="_blank"
+        >
+          Download App
+        </a>
+      </div> */}
       {images.map((data, index) => (
         <>
           <img
@@ -51,9 +61,9 @@ function App() {
             key={index}
             alt={index}
             id={index}
-            style={{borderRadius: 20}}
-            width={(index % 2) === 0 ? 100 : 300}
-            height={(index % 2) === 0 ? 100 : "auto"}
+            style={{ margin: "10px 0" }}
+            width={index % 2 === 0 ? 100 : 300}
+            height={index % 2 === 0 ? 100 : "auto"}
           />
           <br />
         </>

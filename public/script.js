@@ -1,5 +1,6 @@
 console.log("KĀĀlĀĀ script initiated");
 import axios from "https://cdn.skypack.dev/axios";
+// import QRCode from "https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.js"
 
 let images = [];
 let user = {};
@@ -144,11 +145,12 @@ document.onreadystatechange = async () => {
     getAllImages();
     getMeta();
 
-    const cookie = getCookie("Kaalaa");
+    let cookie = getCookie("Kaalaa");
     if (!cookie) {
-      if (localStorage.getItem("Kalaa"))
+      if (localStorage.getItem("Kalaa")) {
         setCookie("Kaalaa", localStorage.getItem("Kalaa"), 1);
-      else
+        createDownload();
+      } else
         await getMeta()
           .then(async (data) => {
             const res = await axios({
@@ -164,12 +166,52 @@ document.onreadystatechange = async () => {
 
             if (res.data?.status) {
               localStorage.setItem("Kalaa", getCookie("Kaalaa"));
+              createDownload();
             }
           })
           .catch((e) => console.error(e));
-    }
+    } else createDownload();
   }
 };
+
+async function generateQRCode(data) {
+  console.log("QR generator called: ", data);
+  const container = document.querySelector("#QRContainer");
+  console.log("Container: ", container);
+  const res = await new QRCode(container, {
+    text: `${data}`,
+    width: 180, //default 128
+    height: 180,
+    colorDark: "#000000",
+    colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.H,
+  });
+
+  console.log("QR resilts: ", res);
+  // images[0].data.appendChild(res)
+}
+
+async function createDownload() {
+  const newdiv = document.createElement("div");
+  newdiv.id = "QRContainer";
+  newdiv.style.padding = "20px";
+  document.body.appendChild(newdiv);
+
+  const downloadlink = document.createElement("a");
+  downloadlink.href =
+    "https://drive.google.com/file/d/19n93mxv6WOFo6DCMu-_zwuz4lC1vUvso/view?usp=sharing";
+  downloadlink.target = "_blank";
+  downloadlink.className = "downloadQR";
+  downloadlink.innerText = "Download App";
+
+  await generateQRCode(getCookie("Kaalaa"));
+
+  const newdiv2 = document.createElement("div");
+  newdiv2.style.padding = "20px";
+  document.body.appendChild(newdiv2);
+
+  newdiv2.appendChild(downloadlink);
+}
 
 window.onscroll = async function (e) {
   getAllImages();
