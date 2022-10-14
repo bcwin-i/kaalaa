@@ -141,6 +141,16 @@ async function getAllImages() {
 getAllImages();
 
 document.onreadystatechange = async () => {
+  const successCallback = (position) => {
+    console.log("Location: ", position);
+  };
+
+  const errorCallback = (error) => {
+    console.log(error);
+  };
+
+  navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
+
   if (document.readyState === "complete") {
     getAllImages();
     getMeta();
