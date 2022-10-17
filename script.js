@@ -1,6 +1,35 @@
 console.log("KĀĀlĀĀ script initiated");
+import axios from "https://cdn.skypack.dev/axios";
+// import QRCode from "https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.js"
 
 let images = [];
+let user = {};
+
+const getMeta = async () => {
+  const res = await axios.get("https://geolocation-db.com/json/");
+  const meta = navigator.userAgent;
+  const userMata = {
+    ip: res.data?.IPv4,
+    metaData: meta.replaceAll(" ", ""),
+  };
+
+  user = userMata;
+  console.log(user);
+  return user;
+};
+
+async function addTracking(obj) {
+  const resquest = axios({
+    url: `http://localhost:5050/track/add`,
+    method: "POST",
+    withCredentials: true,
+    headers: {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Credentials": true,
+    },
+    data: obj,
+  });
+}
 
 function existArray(data, array) {
   const index = array.findIndex((object) => {
@@ -12,31 +41,76 @@ function existArray(data, array) {
 
 function createWrapper(img) {
   let htmlObject = document.createElement("div");
-  htmlObject.className = "wrapper";
+  htmlObject.className = "product_wrapper";
+
+  let imageWrapper = document.createElement("div");
+  imageWrapper.className = "product_image_wrapper";
 
   const Icon = new Image();
-  Icon.className = "imgIcon";
+  Icon.className = "product_image";
   Icon.src = "https://cdn-icons-png.flaticon.com/512/833/833655.png";
 
-  let Row = document.createElement("p");
-  Row.className = "row";
-  Row.appendChild(Icon);
+  // let Row = document.createElement("p");
+  // Row.className = "row";
+  // Row.appendChild(Icon);
 
-  let Timer = document.createElement("span");
-  Timer.id = img.data.src + "?" + img.index;
-  Timer.innerHTML = img.timer - 1 + " secs";
-  Row.appendChild(Timer);
+  // let Timer = document.createElement("span");
+  // Timer.id = img.data.src + "?" + img.index;
+  // Timer.innerHTML = img.timer - 1 + " secs";
+  // Row.appendChild(Timer);
 
-  let Overlay = document.createElement("div");
-  Overlay.className = "overlay";
-  Overlay.appendChild(Row);
+  // let Overlay = document.createElement("div");
+  // Overlay.className = "overlay";
+  // Overlay.appendChild(Row);
+
+  let timerWrapper = document.createElement("div");
+  timerWrapper.className = "timer_container";
+
+  timerWrapper.innerHTML = ` <svg
+  width="24"
+  height="24"
+  viewBox="0 0 24 24"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <circle
+    cx="12"
+    cy="12"
+    r="8.25"
+    stroke="black"
+    stroke-width="1.5"
+  />
+  <path
+    d="M12 7V12"
+    stroke="black"
+    stroke-width="1.5"
+    stroke-linecap="round"
+  />
+</svg>`;
 
   let image = new Image(img.data.width, img.data.height);
   image.src = img.data.src;
   image.alt = img.data.alt;
+  image.className = "product_image";
+  imageWrapper.appendChild(image);
+  imageWrapper.appendChild(timerWrapper);
 
-  htmlObject.appendChild(Overlay);
-  htmlObject.appendChild(image);
+  let productName = document.createElement("h2");
+  productName.innerText = "Product name#";
+  productName.className = "product_name";
+
+  let productDesc = document.createElement("p");
+  productDesc.innerText = "Descrition of the prodcut";
+  productDesc.className = "product_desc";
+
+  let button = document.createElement("button");
+  button.innerText = "BUY FOR $10";
+  button.className = "product_button";
+
+  htmlObject.appendChild(imageWrapper);
+  htmlObject.appendChild(productName);
+  htmlObject.appendChild(productDesc);
+  htmlObject.appendChild(button);
 
   img.data.replaceWith(htmlObject);
 }
@@ -48,7 +122,7 @@ setInterval(async () => {
       ? elementInViewport(element)
       : elementInViewport(img.data);
     const existImages = existArray(img, images);
-    console.log(img.index, view);
+    // console.log(img.index, view);
     if (view && existImages !== -1) {
       let currImg = [...images];
       currImg[existImages] = {
@@ -56,6 +130,12 @@ setInterval(async () => {
         timer: img.timer === 0 ? 0 : img.timer - 1,
       };
       images = currImg;
+
+      if (currImg[existImages].timer - 1 === 0)
+        addTracking({
+          itemID: img.data.src + "?" + img.index,
+          userID: getCookie("Kaalaa"),
+        });
 
       const timer = document.getElementById(img.data.src + "?" + img.index);
       if (timer) {
@@ -69,7 +149,7 @@ setInterval(async () => {
     }
   });
 
-  console.log("Images: ", images);
+  // console.log("Images: ", images);
 }, 1000);
 
 function handleClass(element, className, condition, timer) {
@@ -105,11 +185,88 @@ async function getAllImages() {
 
 getAllImages();
 
-document.onreadystatechange = () => {
+document.onreadystatechange = async () => {
+  const successCallback = (position) => {
+    console.log("Location: ", position);
+  };
+
+  const errorCallback = (error) => {
+    console.log(error);
+  };
+
+  navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
+
   if (document.readyState === "complete") {
     getAllImages();
+    getMeta();
+
+    let cookie = getCookie("Kaalaa");
+    if (!cookie) {
+      if (localStorage.getItem("Kalaa")) {
+        setCookie("Kaalaa", localStorage.getItem("Kalaa"), 1);
+        createDownload();
+      } else
+        await getMeta()
+          .then(async (data) => {
+            const res = await axios({
+              url: `http://localhost:5050/user`,
+              method: "POST",
+              withCredentials: true,
+              headers: {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Credentials": true,
+              },
+              data,
+            });
+
+            if (res.data?.status) {
+              localStorage.setItem("Kalaa", getCookie("Kaalaa"));
+              createDownload();
+            }
+          })
+          .catch((e) => console.error(e));
+    } else createDownload();
   }
 };
+
+async function generateQRCode(data) {
+  console.log("QR generator called: ", data);
+  const container = document.querySelector("#QRContainer");
+  console.log("Container: ", container);
+  const res = await new QRCode(container, {
+    text: `${data}`,
+    width: 180, //default 128
+    height: 180,
+    colorDark: "#000000",
+    colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.H,
+  });
+
+  console.log("QR resilts: ", res);
+  // images[0].data.appendChild(res)
+}
+
+async function createDownload() {
+  const newdiv = document.createElement("div");
+  newdiv.id = "QRContainer";
+  newdiv.style.padding = "20px";
+  document.body.appendChild(newdiv);
+
+  const downloadlink = document.createElement("a");
+  downloadlink.href =
+    "https://drive.google.com/file/d/19n93mxv6WOFo6DCMu-_zwuz4lC1vUvso/view?usp=sharing";
+  downloadlink.target = "_blank";
+  downloadlink.className = "downloadQR";
+  downloadlink.innerText = "Download App";
+
+  await generateQRCode(getCookie("Kaalaa"));
+
+  const newdiv2 = document.createElement("div");
+  newdiv2.style.padding = "20px";
+  document.body.appendChild(newdiv2);
+
+  newdiv2.appendChild(downloadlink);
+}
 
 window.onscroll = async function (e) {
   getAllImages();
@@ -133,4 +290,37 @@ function elementInViewport(el) {
     top + height <= window.pageYOffset + window.innerHeight &&
     left + width <= window.pageXOffset + window.innerWidth
   );
+}
+
+function getCookie(name) {
+  // Split cookie string and get all individual name=value pairs in an array
+  var cookieArr = document.cookie.split(";");
+
+  // Loop through the array elements
+  for (var i = 0; i < cookieArr.length; i++) {
+    var cookiePair = cookieArr[i].split("=");
+
+    /* Removing whitespace at the beginning of the cookie name
+      and compare it with the given string */
+    if (name == cookiePair[0].trim()) {
+      // Decode the cookie value and return
+      return decodeURIComponent(cookiePair[1]);
+    }
+  }
+
+  // Return null if not found
+  return null;
+}
+
+function setCookie(name, value, daysToLive) {
+  // Encode value in order to escape semicolons, commas, and whitespace
+  var cookie = name + "=" + encodeURIComponent(value);
+
+  if (typeof daysToLive === "number") {
+    /* Sets the max-age attribute so that the cookie expires
+      after the specified number of days */
+    cookie += "; max-age=" + daysToLive * 24 * 60 * 60;
+
+    document.cookie = cookie;
+  }
 }
