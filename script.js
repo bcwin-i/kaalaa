@@ -1,8 +1,8 @@
 console.log("KĀĀlĀĀ script initiated");
 import axios from "https://cdn.skypack.dev/axios";
-// import QRCode from "https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.js"
 
 let images = [];
+let activeImages = [];
 let user = {};
 
 const getMeta = async () => {
@@ -40,8 +40,10 @@ function existArray(data, array) {
 }
 
 function createWrapper(img) {
+  const id = img.data.src + "-" + img.index;
   let htmlObject = document.createElement("div");
   htmlObject.className = "product_wrapper";
+  htmlObject.id = img.data.src + "-" + img.index + "_mainwrapper";
 
   let imageWrapper = document.createElement("div");
   imageWrapper.className = "product_image_wrapper";
@@ -65,28 +67,20 @@ function createWrapper(img) {
 
   let timerWrapper = document.createElement("div");
   timerWrapper.className = "timer_container";
+  timerWrapper.id = id;
 
-  timerWrapper.innerHTML = ` <svg
-  width="24"
-  height="24"
-  viewBox="0 0 24 24"
-  fill="none"
-  xmlns="http://www.w3.org/2000/svg"
->
-  <circle
-    cx="12"
-    cy="12"
-    r="8.25"
-    stroke="black"
-    stroke-width="1.5"
-  />
-  <path
-    d="M12 7V12"
-    stroke="black"
-    stroke-width="1.5"
-    stroke-linecap="round"
-  />
-</svg>`;
+  timerWrapper.innerHTML = `<svg xmlns:svg="http://www.w3.org/2000/svg" 
+  xmlns="http://www.w3.org/2000/svg" 
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  version="1.0" width="64px" height="64px" 
+  viewBox="0 0 128 128" xml:space="preserve">
+  <rect x="0" y="0" width="100%" height="100%" fill="#FFFFFF"/>
+  <g>
+  <path d="M63.88 0A63.88 63.88 0 1 1 0 63.88 63.88 63.88 0 0 1 63.88 0zm0 11.88a52 52 0 1 1-52 52 52 52 0 0 1 52-52zm0 46.2a5.8 5.8 0 1 1-5.8 5.8 5.8 5.8 0 0 1 5.8-5.8z" fill-rule="evenodd" fill="#000000"/>
+  <path d="M58.25 5h11.3v59h-11.3V5z" fill="#000000"/>
+  <animateTransform attributeName="transform" type="rotate" from="0 64 64" to="360 64 64" dur="2880ms" repeatCount="indefinite"/>
+  </g>
+  </svg>`;
 
   let image = new Image(img.data.width, img.data.height);
   image.src = img.data.src;
@@ -106,6 +100,7 @@ function createWrapper(img) {
   let button = document.createElement("button");
   button.innerText = "BUY FOR $10";
   button.className = "product_button";
+  button.id = id + "_product_button";
 
   htmlObject.appendChild(imageWrapper);
   htmlObject.appendChild(productName);
@@ -115,53 +110,45 @@ function createWrapper(img) {
   img.data.replaceWith(htmlObject);
 }
 
-setInterval(async () => {
-  await images.forEach((img) => {
-    const element = document.getElementById(img.data.src + "?" + img.index);
-    const view = element
-      ? elementInViewport(element)
-      : elementInViewport(img.data);
-    const existImages = existArray(img, images);
-    // console.log(img.index, view);
-    if (view && existImages !== -1) {
-      let currImg = [...images];
-      currImg[existImages] = {
-        ...img,
-        timer: img.timer === 0 ? 0 : img.timer - 1,
-      };
-      images = currImg;
+function startTimer() {
+  setInterval(async () => {
+    await images.forEach((img) => {
+      const id = img.data.src + "-" + img.index;
+      const element = document.getElementById(id);
+      const view = element
+        ? elementInViewport(element)
+        : elementInViewport(img.data);
+      const existImages = existArray(img, images);
 
-      if (currImg[existImages].timer - 1 === 0)
-        addTracking({
-          itemID: img.data.src + "?" + img.index,
-          userID: getCookie("Kaalaa"),
-        });
+      if (view && existImages !== -1) {
+        let currImg = [...images];
+        currImg[existImages] = {
+          ...img,
+          timer: img.timer === 0 ? 0 : img.timer - 1,
+        };
+        images = currImg;
 
-      const timer = document.getElementById(img.data.src + "?" + img.index);
-      if (timer) {
-        timer.innerHTML =
-          images[existImages].timer === 0
-            ? "Watched"
-            : images[existImages].timer + " secs";
-      } else {
-        createWrapper(img);
+        if (currImg[existImages].timer - 1 === 0)
+          addTracking({
+            itemID: id,
+            userID: getCookie("Kaalaa"),
+          });
+
+        const timer = document.getElementById(id);
+        const active = activeImages.findIndex((e) => e.index === img.data.src);
+        if (timer && active !== -1) {
+          timer.innerHTML =
+            images[existImages].timer === 0
+              ? "Watched"
+              : images[existImages].timer;
+        } else {
+          createWrapper(img);
+        }
       }
-    }
-  });
+    });
 
-  // console.log("Images: ", images);
-}, 1000);
-
-function handleClass(element, className, condition, timer) {
-  const valid = element.classList.contains(className);
-  if (condition) {
-    if (!valid) {
-      element.classList.add(className);
-      element.setAttribute("timer", timer);
-    }
-  } else {
-    if (valid) element.classList.remove(className);
-  }
+    // console.log("Images: ", images);
+  }, 1000);
 }
 
 function addImage(img) {
@@ -172,7 +159,7 @@ function addImage(img) {
     // console.log("Size: ", size)
     if (size === "100x100") {
       const index = images.length + 1;
-      images.push({ data: img, index, timer: 10 });
+      images.push({ data: img, index, timer: 10, active: false });
     }
   }
 }
@@ -183,21 +170,9 @@ async function getAllImages() {
   });
 }
 
-getAllImages();
-
 document.onreadystatechange = async () => {
-  const successCallback = (position) => {
-    console.log("Location: ", position);
-  };
-
-  const errorCallback = (error) => {
-    console.log(error);
-  };
-
-  navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
-
   if (document.readyState === "complete") {
-    getAllImages();
+    // getAllImages();
     getMeta();
 
     let cookie = getCookie("Kaalaa");
@@ -226,11 +201,14 @@ document.onreadystatechange = async () => {
           })
           .catch((e) => console.error(e));
     } else createDownload();
+
+    getAllImages();
+    startTimer();
   }
 };
 
 async function generateQRCode(data) {
-  console.log("QR generator called: ", data);
+  // console.log("QR generator called: ", data);
   const container = document.querySelector("#QRContainer");
   console.log("Container: ", container);
   const res = await new QRCode(container, {
@@ -324,3 +302,51 @@ function setCookie(name, value, daysToLive) {
     document.cookie = cookie;
   }
 }
+
+document.addEventListener("mouseover", (e) => {
+  const id = e.target.id;
+  const idPlain = id?.split("-")[0];
+
+  const timer_container = document.getElementById(
+    id?.replace("_mainwrapper", "")
+  );
+  const button = document.getElementById(idPlain + "_product_button");
+  console.log(id + "_product_button", button);
+
+  // console.log("Plain", activeImages);
+  if (id.includes("_")) {
+    setTimeout(() => {
+      const imagesExist = images.findIndex((e) => e?.data?.src === idPlain);
+      const activeExist = activeImages.findIndex(
+        (e) => e?.data?.src === idPlain
+      );
+
+      // console.log(imagesExist, activeExist);
+      // console.log({ id: idPlain, idExist: images[0]?.data?.src });
+      if (activeExist === -1 && imagesExist !== -1) {
+        activeImages.push(images[imagesExist]);
+      }
+      console.log("Active: ", activeImages);
+      timer_container.style.opacity = 1;
+      if (button) {
+        // button?.style?.width = "100%";
+        // button?.style?.height = "48px";
+      }
+    }, 3000);
+  }
+});
+
+document.addEventListener("mouseout", (e) => {
+  const id = e.target.id;
+  const idPlain = id?.split("-")[0];
+
+  const timer_container = document.getElementById(
+    id?.replace("_mainwrapper", "")
+  );
+
+  console.log(timer_container.style.id);
+
+  if (id.includes("_")) {
+    activeImages = activeImages.filter((e) => e?.data?.src !== idPlain);
+  }
+});
