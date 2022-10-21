@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "./App.css";
+// import "./App.css";
 import { Route, Routes } from "react-router-dom";
 import Share from "./pages/Share";
 import Dashboard from "./pages/Dashboard";
@@ -25,35 +25,42 @@ function App() {
   }, []);
 
   return (
-    // <Routes>
-    //   <Route index element={<Dashboard />} />
-    // </Routes>
-    <>
-      {/* <Wrapper key={-1}>
-        <img src="https://random.imagecdn.app/120/100" />
-        <Overlay>
-        <Row>
+    <div style={{ backgroundColor: "#EEEEEE", height: "max-content"}}>
+      {/* <div className="product_wrapper">
+        <div className="product_image_wrapper">
           <img
-            src="https://cdn-icons-png.flaticon.com/512/833/833655.png"
-            alt="timer"
-            height={17}
-            width={17}
-            
+            className="product_image"
+            src="https://source.unsplash.com/random/"
           />
-          8 seconds
-        </Row>
-        </Overlay>
-      </Wrapper> */}
-      <div className="qr" style={{ padding: 20 }}></div>
-      {/* <div style={{ padding: 20 }}>
-        <a
-          className="download"
-          href="https://drive.google.com/file/d/19n93mxv6WOFo6DCMu-_zwuz4lC1vUvso/view?usp=sharing"
-          target="_blank"
-        >
-          Download App
-        </a>
+          <div className="timer_container">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle
+                cx="12"
+                cy="12"
+                r="8.25"
+                stroke="black"
+                stroke-width="1.5"
+              />
+              <path
+                d="M12 7V12"
+                stroke="black"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
+            </svg>
+          </div>
+        </div>
+        <h2 className="product_name">Product name #</h2>
+        <p className="product_desc">Descrition of the prodcut</p>
+        <button className="product_button">BUY FOR $10</button>
       </div> */}
+      <div className="qr" style={{ padding: 20 }}></div>
       {images.map((data, index) => (
         <>
           <img
@@ -68,7 +75,7 @@ function App() {
           <br />
         </>
       ))}
-    </>
+    </div>
   );
 }
 
