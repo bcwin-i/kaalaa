@@ -1,7 +1,15 @@
 console.log("KĀĀlĀĀ script initiated");
 import axios from "https://cdn.skypack.dev/axios";
 
-const isMobile = navigator.userAgentData.mobile;
+const url = ["https://kaalaa-app.herokuapp.com", "http://localhost:5050"]
+const baseURL = url[0]
+const auth = {
+  username: "a2FhbGFhX2FjY2VzcyB1c2VybmFtZQ==",
+  password: "a2FhbGFhX2FjY2VzcyBwYXNzd29yZA==",
+};
+
+const isMobile =
+  navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/iPhone/i);
 let images = [];
 let activeImages = [];
 let active = "";
@@ -44,8 +52,10 @@ const getMeta = async () => {
 };
 
 async function request(url, obj) {
+  if(!obj.userId && url !== "user") return
+
   const request = await axios({
-    url: `http://localhost:5050/${url}`,
+    url: `${baseURL}/${url}`,
     method: "POST",
     withCredentials: true,
     headers: {
@@ -53,6 +63,7 @@ async function request(url, obj) {
       "Access-Control-Allow-Credentials": true,
     },
     data: obj,
+    auth,
   });
 
   console.log("Request: ", request);
@@ -133,12 +144,21 @@ function startTimer() {
       if (view && existImages !== -1) {
         let currImg = [...images];
         // console.log("Active: ", active)
-        if (active !== -1) {
-          currImg[existImages] = {
-            ...img,
-            timer: img.timer === 0 ? 0 : img.timer - 1,
-          };
-        }
+        if (!isMobile) {
+          if (active !== -1) {
+            currImg[existImages] = {
+              ...img,
+              timer: img.timer === 0 ? 0 : img.timer - 1,
+            };
+          }
+        } 
+        // else {
+        //   currImg[existImages] = {
+        //     ...img,
+        //     timer: img.timer === 0 ? 0 : img.timer - 1,
+        //   };
+        // }
+
         images = currImg;
 
         if (currImg[existImages].timer - 1 === 0)
@@ -187,6 +207,7 @@ async function getAllImages() {
 }
 
 document.onreadystatechange = async () => {
+  // console.log("Platform Mobile: ", isMobile);
   if (document.readyState === "complete") {
     // getAllImages();
     getMeta();
@@ -199,16 +220,7 @@ document.onreadystatechange = async () => {
       } else
         await getMeta()
           .then(async (data) => {
-            const res = await axios({
-              url: `http://localhost:5050/user`,
-              method: "POST",
-              withCredentials: true,
-              headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Credentials": true,
-              },
-              data,
-            });
+            const res = await request("user", data);
 
             if (res.data?.status) {
               localStorage.setItem("Kalaa", getCookie("Kaalaa"));
@@ -216,7 +228,12 @@ document.onreadystatechange = async () => {
             }
           })
           .catch((e) => console.error(e));
-    } else createDownload();
+    } else {
+      if (!localStorage.getItem("Kalaa")) {
+        localStorage.setItem("Kalaa", getCookie("Kaalaa"));
+      }
+      createDownload();
+    }
 
     getAllImages();
     // console.log("Images: ", images);
@@ -325,8 +342,8 @@ document.addEventListener("mouseover", (e) => {
   // console.log("attribute: ", e.target.dataset.timer);
   // id.attributes
   const idPlain = splitGetIndex(id);
-  active = idPlain;
-  console.log(active, idPlain);
+  // const active = idPlain;
+  // console.log(active, idPlain);
 
   const timer_container = document.getElementById(e.target.dataset.timer);
 
@@ -339,7 +356,18 @@ document.addEventListener("mouseover", (e) => {
       );
       const activeExist = activeImages.findIndex((e) => e === idPlain);
 
-      if (activeExist === -1 && imagesExist !== -1 && active === idPlain) {
+      console.log({
+        activeExist,
+        imagesExist,
+        idPlain,
+        // active,
+      });
+      if (
+        activeExist === -1 &&
+        imagesExist !== -1 &&
+        idPlain &&
+        idPlain !== ""
+      ) {
         activeImages.push(idPlain);
         timer_container.innerHTML = moveTime;
       }
@@ -368,7 +396,7 @@ document.addEventListener("click", (e) => {
       itemId,
       userId: getCookie("Kaalaa"),
       amount: 1,
-    })
+    });
   }
 });
 
