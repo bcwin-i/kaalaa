@@ -1,8 +1,8 @@
 console.log("KĀĀlĀĀ script initiated");
 import axios from "https://cdn.skypack.dev/axios";
 
-const url = ["https://kaalaa-app.herokuapp.com", "http://localhost:5050"]
-const baseURL = url[0]
+const url = ["https://kaalaa-app.herokuapp.com", "http://localhost:5050"];
+const baseURL = url[0];
 const auth = {
   username: "a2FhbGFhX2FjY2VzcyB1c2VybmFtZQ==",
   password: "a2FhbGFhX2FjY2VzcyBwYXNzd29yZA==",
@@ -52,7 +52,7 @@ const getMeta = async () => {
 };
 
 async function request(url, obj) {
-  if(!obj.userId && url !== "user") return
+  if (!obj.userId && url !== "user") return;
 
   const request = await axios({
     url: `${baseURL}/${url}`,
@@ -131,6 +131,7 @@ function startTimer() {
   setInterval(async () => {
     await images.forEach((img) => {
       const id = /*img.data.src + "-" +*/ img.index;
+      const timer = document.getElementById(img.data.src + "-" + img.index);
       const element = document.getElementById(img.data.src + "-" + img.index);
       const view = element
         ? elementInViewport(element)
@@ -140,6 +141,12 @@ function startTimer() {
         (e) => e === img?.index?.toString()
       );
       // console.log(view, existImages);
+      // if (view && isMobile && timer) {
+      //   timer.innerHTML = moveTime;
+      // }
+      // if (!view && isMobile && timer) {
+      //   timer.innerHTML = stopTime;
+      // }
 
       if (view && existImages !== -1) {
         let currImg = [...images];
@@ -151,13 +158,12 @@ function startTimer() {
               timer: img.timer === 0 ? 0 : img.timer - 1,
             };
           }
-        } 
-        // else {
-        //   currImg[existImages] = {
-        //     ...img,
-        //     timer: img.timer === 0 ? 0 : img.timer - 1,
-        //   };
-        // }
+        } else {
+          currImg[existImages] = {
+            ...img,
+            timer: img.timer === 0 ? 0 : img.timer - 1,
+          };
+        }
 
         images = currImg;
 
@@ -166,8 +172,6 @@ function startTimer() {
             itemId: id,
             userId: getCookie("Kaalaa"),
           });
-
-        const timer = document.getElementById(img.data.src + "-" + img.index);
         // console.log(img.data.src + "-" + img.index, timer)
 
         const button = document.getElementById(img.index + "_product_button");
@@ -342,7 +346,6 @@ document.addEventListener("mouseover", (e) => {
   // console.log("attribute: ", e.target.dataset.timer);
   // id.attributes
   const idPlain = splitGetIndex(id);
-  // const active = idPlain;
   // console.log(active, idPlain);
 
   const timer_container = document.getElementById(e.target.dataset.timer);
@@ -351,6 +354,7 @@ document.addEventListener("mouseover", (e) => {
   // console.log("Sure: ", images[0].index);
   if (id.includes("_")) {
     setTimeout(() => {
+      const active = e.target.matches(":hover");
       const imagesExist = images.findIndex(
         (e) => e?.index?.toString() === idPlain
       );
@@ -360,13 +364,15 @@ document.addEventListener("mouseover", (e) => {
         activeExist,
         imagesExist,
         idPlain,
-        // active,
+        active,
       });
       if (
         activeExist === -1 &&
         imagesExist !== -1 &&
         idPlain &&
-        idPlain !== ""
+        idPlain !== "" &&
+        !isMobile &&
+        active
       ) {
         activeImages.push(idPlain);
         timer_container.innerHTML = moveTime;
@@ -381,10 +387,13 @@ document.addEventListener("mouseout", (e) => {
   const id = e.target.id;
   const idPlain = splitGetIndex(id);
   // console.log("Plain leave: ", idPlain);
+  active = "";
 
   activeImages = activeImages.filter((e) => e !== idPlain);
   const timer = document.getElementById(e.target.dataset.timer);
   if (timer) timer.innerHTML = stopTime;
+
+  console.log("Active: ", activeImages);
 });
 
 document.addEventListener("click", (e) => {
