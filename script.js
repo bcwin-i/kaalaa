@@ -186,6 +186,7 @@ function startTimer() {
           if (images[existImages].timer === 0) {
             button ? (button.style.display = "flex") : null;
             timer.style.width = "max-content";
+            timer.style.opacity = 1;
             timer.innerHTML = reward + " Claim for $1";
             timer.setAttribute("data-timer", img.data.src + "-" + img.index);
             timer.setAttribute("data-reward", "yes");
