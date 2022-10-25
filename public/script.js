@@ -195,9 +195,9 @@ function addImage(img) {
   const exist = existArray(img, images);
   // console.log("New image: ", images.some(e => e.data.src === img.src))
   if (!images.some((e) => e.data.src === img.src) && img.src) {
-    const size = `${img.width}x${img.height}`;
+    const size = { width: img.width, height: img.height };
     // console.log("Size: ", size)
-    if (size === "100x100") {
+    if (size.height >= 100 && size.width >= 100) {
       const index = images.length + 1;
       images.push({ data: img, index, timer: 10, active: false });
     }
