@@ -50,7 +50,7 @@
 
 .product_button {
   transition: 0.5s all ease-in-out;
-  display: none;
+  display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
@@ -80,6 +80,24 @@
   gap: 8px;
   position: absolute;
   width: 40px;
+  height: 40px;
+  right: 8px;
+  top: 8px;
+  background: #ffffff;
+  border-radius: 8px;
+}
+
+.timer_container_w {
+  transition: 0.5s all ease-in-out;
+  display: flex;
+  opacity: 0;
+  justify-content: center;
+  flex-direction: row;
+  align-items: center;
+  padding: 10px;
+  gap: 8px;
+  position: absolute;
+  width: max-content !important;
   height: 40px;
   right: 8px;
   top: 8px;

@@ -37,6 +37,12 @@ viewBox="0 0 128 128" xml:space="preserve">
 <animateTransform attributeName="transform" type="rotate" from="0 64 64" to="360 64 64" dur="2880ms" repeatCount="indefinite"/>
 </g>
 </svg>`;
+const reward = `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="10" cy="8" r="2.5" stroke="black"/>
+<path d="M10.5248 1.81414C10.2332 1.52854 9.76679 1.52854 9.4752 1.81414L8.02577 3.23379L5.99702 3.25485C5.5889 3.25908 5.25908 3.5889 5.25485 3.99702L5.23379 6.02577L3.81414 7.4752C3.52854 7.76679 3.52854 8.23321 3.81414 8.5248L5.23379 9.97423L5.25485 12.003C5.25908 12.4111 5.5889 12.7409 5.99702 12.7452L8.02577 12.7662L9.4752 14.1859C9.76679 14.4715 10.2332 14.4715 10.5248 14.1859L11.9742 12.7662L14.003 12.7452C14.4111 12.7409 14.7409 12.4111 14.7452 12.003L14.7662 9.97423L16.1859 8.5248C16.4715 8.23321 16.4715 7.76679 16.1859 7.4752L14.7662 6.02577L14.7452 3.99702C14.7409 3.5889 14.4111 3.25908 14.003 3.25485L11.9742 3.23379L10.5248 1.81414Z" stroke="black" stroke-linejoin="round"/>
+<path d="M7 12.5V18.5L10 17.0333M13 12.5V18.5L10 17.0333M10 17.0333V14.1667" stroke="black" stroke-linejoin="round"/>
+</svg>
+`;
 
 const getMeta = async () => {
   const res = await axios.get("https://geolocation-db.com/json/");
@@ -179,7 +185,9 @@ function startTimer() {
         if (timer) {
           if (images[existImages].timer === 0) {
             button ? (button.style.display = "flex") : null;
-            timer.innerHTML = stopTime;
+            timer.style.width = "max-content";
+            timer.setAttribute("style", "width: max-content !important");
+            timer.innerHTML = reward + " Claim for $1";
           }
         } else {
           createWrapper(img);
