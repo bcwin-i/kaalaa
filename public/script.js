@@ -1,8 +1,7 @@
 console.log("KĀĀlĀĀ script initiated");
-import axios from "https://cdn.skypack.dev/axios";
 
-const url = ["https://kaalaa-app.herokuapp.com", "http://localhost:5050"];
-const baseURL = url[0];
+const url = ["https://kaalaa-app.herokuapp.com/", "http://localhost:5050/"];
+const baseURL = url[1];
 const auth = {
   username: "a2FhbGFhX2FjY2VzcyB1c2VybmFtZQ==",
   password: "a2FhbGFhX2FjY2VzcyBwYXNzd29yZA==",
@@ -45,35 +44,46 @@ const reward = `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmln
 `;
 
 const getMeta = async () => {
-  const res = await axios.get("https://geolocation-db.com/json/");
+  let res;
+  await fetch("https://geolocation-db.com/json/").then(async (e) => {
+    await e.json().then((obj) => {
+      res = obj;
+    });
+  });
+
   const meta = navigator.userAgent;
   const userMata = {
-    ip: res.data?.IPv4,
+    ip: res?.IPv4,
     metaData: meta.replaceAll(" ", ""),
   };
 
   user = userMata;
-  // console.log(user);
   return user;
 };
 
 async function request(url, obj) {
   // if (!obj.userId && url !== "user") return;
+  var credentials = btoa(
+    "a2FhbGFhX2FjY2VzcyB1c2VybmFtZQ==" +
+      ":" +
+      "a2FhbGFhX2FjY2VzcyBwYXNzd29yZA=="
+  );
 
-  const request = await axios({
-    url: `${baseURL}/${url}`,
+  var auth = { Authorization: `Basic ${credentials}` };
+
+  const response = await fetch(baseURL + url, {
     method: "POST",
-    withCredentials: true,
+    credentials: "same-origin",
     headers: {
       "Content-Type": "application/json",
-      "Access-Control-Allow-Credentials": true,
+      Authorization: `Basic ${credentials}`,
     },
-    data: obj,
-    auth,
+    body: JSON.stringify(obj),
   });
 
-  console.log("Request: ", request);
-  return request?.data;
+  const data = await response.json();
+  console.log("Req res: ", data)
+  return data
 }
 
 function existArray(data, array) {
@@ -108,7 +118,7 @@ function createWrapper(img) {
   image.src = img.data.src;
   image.alt = img.data.alt;
   image.id = id + "_mainwrapper";
-  image.style.cursor = "pointer"
+  image.style.cursor = "pointer";
   image.setAttribute("data-timer", img.data.src + "-" + img.index);
   // image.className = "product_image";
   imageWrapper.appendChild(image);
@@ -241,7 +251,6 @@ document.onreadystatechange = async () => {
             const res = await request("user", data);
             // console.log("Token: ", res)
             if (res.status) {
-              
               setCookie("Kaalaa", res?.token, 1);
               localStorage.setItem("Kaalaa", res?.token);
               createDownload();
@@ -285,8 +294,9 @@ async function createDownload() {
   document.body.appendChild(newdiv);
 
   const downloadlink = document.createElement("a");
-  downloadlink.href =
-    ` https://play.google.com/store/apps/details?id=com.kaalaa_app&referrer=utm_source%3Dgoogle%26utm_campaign%3D${getCookie("Kaalaa")}`;
+  downloadlink.href = ` https://play.google.com/store/apps/details?id=com.kaalaa_app&referrer=utm_source%3Dgoogle%26utm_campaign%3D${getCookie(
+    "Kaalaa"
+  )}`;
   downloadlink.target = "_blank";
   downloadlink.className = "downloadQR";
   downloadlink.innerText = "Download App";
