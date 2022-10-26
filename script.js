@@ -82,8 +82,8 @@ async function request(url, obj) {
   });
 
   const data = await response.json();
-  console.log("Req res: ", data)
-  return data
+  console.log("Req res: ", data);
+  return data;
 }
 
 function existArray(data, array) {
@@ -200,6 +200,7 @@ function startTimer() {
             button ? (button.style.display = "flex") : null;
             timer.style.width = "max-content";
             timer.style.opacity = 1;
+            timer.style.cursor = "pointer";
             timer.innerHTML = reward + " Claim for $1";
             timer.setAttribute("data-timer", img.data.src + "-" + img.index);
             timer.setAttribute("data-reward", "yes");
@@ -435,6 +436,8 @@ document.addEventListener("click", (e) => {
       userId: getCookie("Kaalaa"),
       amount: 1,
     });
+
+    e.target.style.display = "none";
   }
 });
 
