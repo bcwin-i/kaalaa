@@ -1,8 +1,7 @@
 console.log("KĀĀlĀĀ script initiated");
-import axios from "https://cdn.skypack.dev/axios";
 
-const url = ["https://kaalaa-app.herokuapp.com", "http://localhost:5050"];
-const baseURL = url[0];
+const url = ["https://kaalaa-app.herokuapp.com/", "http://localhost:5050/"];
+const baseURL = url[1];
 const auth = {
   username: "a2FhbGFhX2FjY2VzcyB1c2VybmFtZQ==",
   password: "a2FhbGFhX2FjY2VzcyBwYXNzd29yZA==",
@@ -45,35 +44,46 @@ const reward = `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmln
 `;
 
 const getMeta = async () => {
-  const res = await axios.get("https://geolocation-db.com/json/");
+  let res;
+  await fetch("https://geolocation-db.com/json/").then(async (e) => {
+    await e.json().then((obj) => {
+      res = obj;
+    });
+  });
+
   const meta = navigator.userAgent;
   const userMata = {
-    ip: res.data?.IPv4,
+    ip: res?.IPv4,
     metaData: meta.replaceAll(" ", ""),
   };
 
   user = userMata;
-  // console.log(user);
   return user;
 };
 
 async function request(url, obj) {
-  if (!obj.userId && url !== "user") return;
+  // if (!obj.userId && url !== "user") return;
+  var credentials = btoa(
+    "a2FhbGFhX2FjY2VzcyB1c2VybmFtZQ==" +
+      ":" +
+      "a2FhbGFhX2FjY2VzcyBwYXNzd29yZA=="
+  );
 
-  const request = await axios({
-    url: `${baseURL}/${url}`,
+  var auth = { Authorization: `Basic ${credentials}` };
+
+  const response = await fetch(baseURL + url, {
     method: "POST",
-    withCredentials: true,
+    credentials: "same-origin",
     headers: {
       "Content-Type": "application/json",
-      "Access-Control-Allow-Credentials": true,
+      Authorization: `Basic ${credentials}`,
     },
-    data: obj,
-    auth,
+    body: JSON.stringify(obj),
   });
 
-  console.log("Request: ", request);
-  return request?.data;
+  const data = await response.json();
+  console.log("Req res: ", data)
+  return data
 }
 
 function existArray(data, array) {
@@ -88,7 +98,7 @@ function createWrapper(img) {
   const id = /*img.data.src + "-" +*/ img.index;
   let htmlObject = document.createElement("div");
   htmlObject.className = "product_wrapper";
-  htmlObject.id = id + "_mainwrapper";
+  // htmlObject.id = id + "_mainwrapper";
   htmlObject.setAttribute("data-timer", img.data.src + "-" + img.index);
 
   let imageWrapper = document.createElement("div");
@@ -107,7 +117,10 @@ function createWrapper(img) {
   let image = new Image(img.data.width, img.data.height);
   image.src = img.data.src;
   image.alt = img.data.alt;
-  image.className = "product_image";
+  image.id = id + "_mainwrapper";
+  image.style.cursor = "pointer";
+  image.setAttribute("data-timer", img.data.src + "-" + img.index);
+  // image.className = "product_image";
   imageWrapper.appendChild(image);
   imageWrapper.appendChild(timerWrapper);
 
@@ -123,12 +136,12 @@ function createWrapper(img) {
   button.innerText = "BUY FOR $1";
   button.className = "product_button";
   button.id = id + "_product_button";
-  button.setAttribute("data-timer", img.data.src + "-" + img.index);
+  // button.setAttribute("data-timer", img.data.src + "-" + img.index);
 
   htmlObject.appendChild(imageWrapper);
-  htmlObject.appendChild(productName);
-  htmlObject.appendChild(productDesc);
-  htmlObject.appendChild(button);
+  // htmlObject.appendChild(productName);
+  // htmlObject.appendChild(productDesc);
+  // htmlObject.appendChild(button);
 
   img.data.replaceWith(htmlObject);
 }
@@ -186,8 +199,10 @@ function startTimer() {
           if (images[existImages].timer === 0) {
             button ? (button.style.display = "flex") : null;
             timer.style.width = "max-content";
-            timer.setAttribute("style", "width: max-content !important");
+            timer.style.opacity = 1;
             timer.innerHTML = reward + " Claim for $1";
+            timer.setAttribute("data-timer", img.data.src + "-" + img.index);
+            timer.setAttribute("data-reward", "yes");
           }
         } else {
           createWrapper(img);
@@ -204,11 +219,12 @@ function addImage(img) {
   // console.log("New image: ", images.some(e => e.data.src === img.src))
   if (!images.some((e) => e.data.src === img.src) && img.src) {
     const size = { width: img.width, height: img.height };
-    // console.log("Size: ", size)
-    if (size.height >= 100 && size.width >= 100) {
-      const index = images.length + 1;
-      images.push({ data: img, index, timer: 10, active: false });
-    }
+    // console.log("Size: ", img.height !== 180.5 && img.width !== 180.5)
+    if (img.height !== 180 && img.width !== 180)
+      if (size.height >= 100 && size.width >= 100) {
+        const index = images.length + 1;
+        images.push({ data: img, index, timer: 10, active: false });
+      }
   }
 }
 
@@ -226,23 +242,24 @@ document.onreadystatechange = async () => {
 
     let cookie = getCookie("Kaalaa");
     if (!cookie) {
-      if (localStorage.getItem("Kalaa")) {
-        setCookie("Kaalaa", localStorage.getItem("Kalaa"), 1);
+      if (localStorage.getItem("Kaalaa")) {
+        setCookie("Kaalaa", localStorage.getItem("Kaalaa"), 1);
         createDownload();
       } else
         await getMeta()
           .then(async (data) => {
             const res = await request("user", data);
-
-            if (res.data?.status) {
-              localStorage.setItem("Kalaa", getCookie("Kaalaa"));
+            // console.log("Token: ", res)
+            if (res.status) {
+              setCookie("Kaalaa", res?.token, 1);
+              localStorage.setItem("Kaalaa", res?.token);
               createDownload();
             }
           })
           .catch((e) => console.error(e));
     } else {
-      if (!localStorage.getItem("Kalaa")) {
-        localStorage.setItem("Kalaa", getCookie("Kaalaa"));
+      if (!localStorage.getItem("Kaalaa")) {
+        localStorage.setItem("Kaalaa", getCookie("Kaalaa"));
       }
       createDownload();
     }
@@ -277,8 +294,9 @@ async function createDownload() {
   document.body.appendChild(newdiv);
 
   const downloadlink = document.createElement("a");
-  downloadlink.href =
-    "https://drive.google.com/file/d/19n93mxv6WOFo6DCMu-_zwuz4lC1vUvso/view?usp=sharing";
+  downloadlink.href = ` https://play.google.com/store/apps/details?id=com.kaalaa_app&referrer=utm_source%3Dgoogle%26utm_campaign%3D${getCookie(
+    "Kaalaa"
+  )}`;
   downloadlink.target = "_blank";
   downloadlink.className = "downloadQR";
   downloadlink.innerText = "Download App";
@@ -399,7 +417,9 @@ document.addEventListener("mouseout", (e) => {
 
   activeImages = activeImages.filter((e) => e !== idPlain);
   const timer = document.getElementById(e.target.dataset.timer);
-  if (timer) timer.innerHTML = stopTime;
+  if (timer)
+    timer.innerHTML =
+      timer.style.width === "max-content" ? reward + " Claim for $1" : stopTime;
 
   console.log("Active: ", activeImages);
 });
@@ -407,8 +427,9 @@ document.addEventListener("mouseout", (e) => {
 document.addEventListener("click", (e) => {
   const id = e.target.id;
   const itemId = e.target.dataset.timer;
+  const reward = e.target.dataset.reward;
 
-  if (id.includes("_product_button")) {
+  if (itemId && reward) {
     request("reward/add", {
       itemId,
       userId: getCookie("Kaalaa"),
