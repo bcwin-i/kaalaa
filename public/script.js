@@ -88,7 +88,7 @@ function createWrapper(img) {
   const id = /*img.data.src + "-" +*/ img.index;
   let htmlObject = document.createElement("div");
   htmlObject.className = "product_wrapper";
-  htmlObject.id = id + "_mainwrapper";
+  // htmlObject.id = id + "_mainwrapper";
   htmlObject.setAttribute("data-timer", img.data.src + "-" + img.index);
 
   let imageWrapper = document.createElement("div");
@@ -107,7 +107,10 @@ function createWrapper(img) {
   let image = new Image(img.data.width, img.data.height);
   image.src = img.data.src;
   image.alt = img.data.alt;
-  image.className = "product_image";
+  image.id = id + "_mainwrapper";
+  image.style.cursor = "pointer"
+  image.setAttribute("data-timer", img.data.src + "-" + img.index);
+  // image.className = "product_image";
   imageWrapper.appendChild(image);
   imageWrapper.appendChild(timerWrapper);
 
@@ -126,9 +129,9 @@ function createWrapper(img) {
   // button.setAttribute("data-timer", img.data.src + "-" + img.index);
 
   htmlObject.appendChild(imageWrapper);
-  htmlObject.appendChild(productName);
-  htmlObject.appendChild(productDesc);
-  htmlObject.appendChild(button);
+  // htmlObject.appendChild(productName);
+  // htmlObject.appendChild(productDesc);
+  // htmlObject.appendChild(button);
 
   img.data.replaceWith(htmlObject);
 }

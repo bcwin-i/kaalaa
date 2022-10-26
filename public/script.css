@@ -1,22 +1,17 @@
 .product_wrapper {
   position: relative;
-  padding: 24px;
-  width: max-content;
-  height: max-content;
-  background: #ffffff;
-  box-shadow: 128px 128px 128px rgba(0, 0, 0, 0.1);
-  border-radius: 32px;
-  cursor: pointer;
+  /* padding: 24px; */
+  width: min-content;
+  height: min-content;
+  background: transparent;
 }
 
 .product_image_wrapper {
   position: relative;
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 8px;
-  max-width: 352px;
-  max-height: 352px;
+  background: transparent;
+  width: min-content;
+  height: min-content;
   overflow: hidden;
-  padding: 0;
 }
 
 .product_image {
