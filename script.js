@@ -79,42 +79,46 @@ const getMeta = async () => {
 };
 
 async function request(url, obj) {
-  if (obj.itemId) {
-    const modalStatus = document.getElementById("modalStatusContainer");
-    if (modalStatus) modalStatus.innerHTML = request_loader;
-  }
-  // if (!obj.userId && url !== "user") return;
-  var credentials = btoa(
-    "a2FhbGFhX2FjY2VzcyB1c2VybmFtZQ==" +
-      ":" +
-      "a2FhbGFhX2FjY2VzcyBwYXNzd29yZA=="
-  );
-
-  var auth = { Authorization: `Basic ${credentials}` };
-
-  const response = await fetch(baseURL + url, {
-    method: "POST",
-    credentials: "same-origin",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Basic ${credentials}`,
-    },
-    body: JSON.stringify(obj),
-  });
-
-  const data = await response.json();
-  // console.log("Req res: ", data);
-  if (obj.itemId) {
-    const timer = document.getElementById(obj?.itemId);
-    if (timer) {
-      if (data.status) {
-        timer.setAttribute("data-claimed", "yes");
-        timer.innerHTML = reward;
-      }
+  try {
+    if (obj.itemId) {
+      const modalStatus = document.getElementById("modalStatusContainer");
+      if (modalStatus) modalStatus.innerHTML = request_loader;
     }
-    hideModal();
+    // if (!obj.userId && url !== "user") return;
+    var credentials = btoa(
+      "a2FhbGFhX2FjY2VzcyB1c2VybmFtZQ==" +
+        ":" +
+        "a2FhbGFhX2FjY2VzcyBwYXNzd29yZA=="
+    );
+
+    var auth = { Authorization: `Basic ${credentials}` };
+
+    const response = await fetch(baseURL + url, {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Basic ${credentials}`,
+      },
+      body: JSON.stringify(obj),
+    });
+
+    const data = await response.json();
+    // console.log("Req res: ", data);
+    if (obj.itemId) {
+      const timer = document.getElementById(obj?.itemId);
+      if (timer) {
+        if (data.status) {
+          timer.setAttribute("data-claimed", "yes");
+          timer.innerHTML = reward;
+        }
+      }
+      hideModal();
+    }
+    return data;
+  } catch (e) {
+    console.error(e);
   }
-  return data;
 }
 
 function existArray(data, array) {
