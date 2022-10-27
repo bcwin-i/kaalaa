@@ -81,7 +81,7 @@ const getMeta = async () => {
 async function request(url, obj) {
   if (obj.itemId) {
     const modalStatus = document.getElementById("modalStatusContainer");
-    modalStatus.innerHTML = request_loader;
+    if(modalStatus) modalStatus?.innerHTML = request_loader;
   }
   // if (!obj.userId && url !== "user") return;
   var credentials = btoa(
