@@ -1,7 +1,7 @@
 console.log("KĀĀlĀĀ script initiated");
 
 const url = ["https://kaalaa-app.herokuapp.com/", "http://localhost:5050/"];
-const baseURL = url[1];
+const baseURL = url[0];
 const auth = {
   username: "a2FhbGFhX2FjY2VzcyB1c2VybmFtZQ==",
   password: "a2FhbGFhX2FjY2VzcyBwYXNzd29yZA==",
