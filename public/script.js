@@ -533,7 +533,7 @@ function modalDisplay() {
   modalbutton2.style.color = "white";
 
   const modalStatusWrapper = document.createElement("div");
-  modalContentWrapper.id = "modalStatusContainer";
+  modalStatusWrapper.id = "modalStatusContainer";
   modalStatusWrapper.appendChild(modalbutton1);
   modalStatusWrapper.appendChild(modalbutton2);
 
