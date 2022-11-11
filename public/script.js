@@ -100,7 +100,7 @@ async function request(url, obj) {
         "Content-Type": "application/json",
         Authorization: `Basic ${credentials}`,
       },
-      body: JSON.stringify(obj),
+      body: JSON?.stringify(obj),
     });
 
     const data = await response.json();

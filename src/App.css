@@ -138,3 +138,18 @@
   color: #ffffff;
   border-radius: 8px;
 }
+
+.claim_input{
+  padding: 8px 16px;
+  gap: 8px;
+  width: 232px;
+  height: 40px;
+  border-radius: 5px;
+  border: none;
+  background-color: #E0E0E0;
+  font-size: 14px;
+  outline: none;
+  font-size: medium;
+  font-weight: bold;
+  text-align: center;
+}
