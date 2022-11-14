@@ -12,15 +12,14 @@ import ImageWrapper from "./components/Images/ImageWrapper";
 
 function App() {
   const [images, setImages] = useState([]);
-  
 
   useEffect(() => {
     // url: "https://source.unsplash.com/random/?sig=" + i,
-    for (let i = 0; i < 10; i++) {
+    for (let i = 1; i <= 6; i++) {
       setImages((e) => [
         ...e,
         {
-          url: "https://source.unsplash.com/random/10×10?" + i,
+          url: require("./assets/image" + i+".jpg"),
           index: i,
           timer: 10,
         },
@@ -28,14 +27,10 @@ function App() {
     }
   }, []);
 
-  
-
   return (
-    <div
-      style={{ display: "flex", flexWrap: "wrap", gap: 10, padding: 10 }}
-    >
+    <div style={{ display: "flex", flexWrap: "wrap", gap: 10, padding: 10 }}>
       {images.map((data, index) => (
-        <ImageWrapper data={data} key={index} index={index}/>
+        <ImageWrapper data={data} key={index} index={index} />
       ))}
     </div>
   );
