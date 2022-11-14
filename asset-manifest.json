@@ -1,16 +1,22 @@
 {
   "files": {
     "main.css": "/kaalaa/static/css/main.d3740bd2.css",
-    "main.js": "/kaalaa/static/js/main.cc301304.js",
+    "main.js": "/kaalaa/static/js/main.292d0919.js",
     "static/js/787.01b60f2e.chunk.js": "/kaalaa/static/js/787.01b60f2e.chunk.js",
+    "static/media/image1.jpg": "/kaalaa/static/media/image1.36ac5032725daa41b4c0.jpg",
+    "static/media/image5.jpg": "/kaalaa/static/media/image5.6238a3e8ac7a20f6c7b5.jpg",
+    "static/media/image2.jpg": "/kaalaa/static/media/image2.492f27134b1a22eba552.jpg",
+    "static/media/image3.jpg": "/kaalaa/static/media/image3.67cef9ab9080b0a04bed.jpg",
+    "static/media/image4.jpg": "/kaalaa/static/media/image4.bbca5f81403574f25cff.jpg",
+    "static/media/image6.jpg": "/kaalaa/static/media/image6.f8cc89a6132b8eeb8666.jpg",
     "service-worker.js": "/kaalaa/service-worker.js",
     "index.html": "/kaalaa/index.html",
     "main.d3740bd2.css.map": "/kaalaa/static/css/main.d3740bd2.css.map",
-    "main.cc301304.js.map": "/kaalaa/static/js/main.cc301304.js.map",
+    "main.292d0919.js.map": "/kaalaa/static/js/main.292d0919.js.map",
     "787.01b60f2e.chunk.js.map": "/kaalaa/static/js/787.01b60f2e.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.d3740bd2.css",
-    "static/js/main.cc301304.js"
+    "static/js/main.292d0919.js"
   ]
 }
