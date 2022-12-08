@@ -9,6 +9,7 @@ import { Overlay, Row, Wrapper } from "./style";
 import ViewLogicContainer from "./components/ViewLogic/ViewLogicContainer";
 import { ImageListContainer } from "./styles/Dashboard";
 import ImageWrapper from "./components/Images/ImageWrapper";
+import { subscribeUser } from "./notification/subscription";
 
 function App() {
   const [images, setImages] = useState([]);
@@ -19,7 +20,7 @@ function App() {
       setImages((e) => [
         ...e,
         {
-          url: require("./assets/image" + i+".jpg"),
+          url: require("./assets/image" + i + ".jpg"),
           index: i,
           timer: 10,
         },
@@ -28,11 +29,16 @@ function App() {
   }, []);
 
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: 10, padding: 10 }}>
-      {images.map((data, index) => (
-        <ImageWrapper data={data} key={index} index={index} />
-      ))}
-    </div>
+    <>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 10, padding: 10 }}>
+        {images.map((data, index) => (
+          <ImageWrapper data={data} key={index} index={index} />
+        ))}
+      </div>
+      <button className="button" onClick={() => subscribeUser()}>
+        Subscribe to notifications
+      </button>
+    </>
   );
 }
 

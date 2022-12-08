@@ -153,3 +153,15 @@
   font-weight: bold;
   text-align: center;
 }
+
+.button {
+  padding: 10px 15px;
+  border-radius: 5px;
+  background-color: #000000;
+  color: white;
+  height: min-content;
+  width: max-content;
+  border: none;
+  outline: none;
+  margin: 5px;
+}
