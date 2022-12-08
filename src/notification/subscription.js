@@ -1,6 +1,8 @@
 import request from "../services/httpRequest";
 
-const convertedVapidKey = urlBase64ToUint8Array("YOUR_PUBLIC VAPID_KEY");
+const convertedVapidKey = urlBase64ToUint8Array(
+  "BJI3FjjK1dkCDW0_2koQuEBdJr7-ipNk80H7NIBoH7FGKgfOsj1952GJDi5k4tBcodtfPadsaBYgf8Kjdy1wIEc"
+);
 
 function urlBase64ToUint8Array(base64String) {
   const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
@@ -34,7 +36,9 @@ let clicked = true;
 
 export function subscribeUser() {
   if (clicked) {
+    console.log("Subcribing to notifications")
     if ("serviceWorker" in navigator) {
+      console.log("Service worker present")
       navigator.serviceWorker.ready
         .then(function (registration) {
           if (!registration.pushManager) {
@@ -78,7 +82,7 @@ export function subscribeUser() {
             e
           );
         });
-    }
+    } else console.log("Service worker not worker");
   } else {
     console.log("Can not reachable to the service worker");
   }
