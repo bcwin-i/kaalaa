@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/kaalaa/static/css/main.71a36543.css",
-    "main.js": "/kaalaa/static/js/main.a45c50ef.js",
+    "main.js": "/kaalaa/static/js/main.2c7235bf.js",
     "static/js/787.01b60f2e.chunk.js": "/kaalaa/static/js/787.01b60f2e.chunk.js",
     "static/media/image1.jpg": "/kaalaa/static/media/image1.36ac5032725daa41b4c0.jpg",
     "static/media/image5.jpg": "/kaalaa/static/media/image5.6238a3e8ac7a20f6c7b5.jpg",
@@ -12,11 +12,11 @@
     "service-worker.js": "/kaalaa/service-worker.js",
     "index.html": "/kaalaa/index.html",
     "main.71a36543.css.map": "/kaalaa/static/css/main.71a36543.css.map",
-    "main.a45c50ef.js.map": "/kaalaa/static/js/main.a45c50ef.js.map",
+    "main.2c7235bf.js.map": "/kaalaa/static/js/main.2c7235bf.js.map",
     "787.01b60f2e.chunk.js.map": "/kaalaa/static/js/787.01b60f2e.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.71a36543.css",
-    "static/js/main.a45c50ef.js"
+    "static/js/main.2c7235bf.js"
   ]
 }
