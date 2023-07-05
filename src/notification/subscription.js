@@ -23,9 +23,10 @@ function urlBase64ToUint8Array(base64String) {
 async function sendSubscription(subscription) {
   const response = await request("notifications/subscribe", {
     subscription: subscription,
-    title: "Notified by Precision Ordance",
-    description: "someone buy a product",
+    title: "Notification subscription",
+    description: "You've successfully suscribed to push notifications",
     icon: "https://drive.google.com/uc?id=1C-LIFfdiqOp6tVc2s-X1Lyn-2ygLqw1S",
+    userId: "1671456885889",
   });
 
   return response;
@@ -36,9 +37,9 @@ let clicked = true;
 
 export function subscribeUser() {
   if (clicked) {
-    console.log("Subcribing to notifications")
+    console.log("Subcribing to notifications");
     if ("serviceWorker" in navigator) {
-      console.log("Service worker present")
+      console.log("Service worker present");
       navigator.serviceWorker.ready
         .then(function (registration) {
           if (!registration.pushManager) {

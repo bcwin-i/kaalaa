@@ -1,8 +1,8 @@
 const url = [
-    "http://kaalaa-server-env.eba-q2w26yfd.us-west-2.elasticbeanstalk.com/",
+    "https://kaalaa-server.com/",
     "http://localhost:5050/",
   ];
-  const baseURL = url[1];
+  const baseURL = url[0];
 
 async function request(url, obj) {
   try {
